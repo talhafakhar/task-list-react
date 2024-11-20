@@ -11,6 +11,7 @@ export interface Task {
     id: string;
     title: string;
     is_own: boolean;
+    is_shared: boolean;
 }
 
 interface TaskListResponse {
@@ -66,7 +67,7 @@ const TaskList: React.FC = () => {
                     <AddInput
                         url={apiRoutes.TASK_LIST}
                         onSuccess={() => fetchTaskLists()}
-                        type={'taskList'}
+                        type={'Task List'}
                         placeholder={'Add Task List'}
                     />
                 </div>
@@ -75,15 +76,20 @@ const TaskList: React.FC = () => {
                 {loading ? (
                     <Loader/>
                 ) : (
-                    taskList?.data?.map((task) => (
-                        <TaskListCard
-                            key={task.id}
-                            task={task}
-                            onSuccess={() => {
-                                fetchTaskLists();
-                            }}
-                        />
-                    ))
+                    <div className='container mx-auto'>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+                            {taskList?.data?.map((task) => (
+                                <TaskListCard
+                                    key={task.id}
+                                    task={task}
+                                    onSuccess={() => {
+                                        fetchTaskLists();
+                                    }}
+                                />
+                            ))}
+                        </div>
+                    </div>
+
                 )}
             </div>
         </>

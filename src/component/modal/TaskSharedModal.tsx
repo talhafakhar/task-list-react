@@ -7,6 +7,7 @@ import {useHandleErrorResponse, useHandleSuccessResponse} from "../../hook/Handl
 import MultiSelect from "../forms/MultiSelect";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faTrash} from "@fortawesome/free-solid-svg-icons";
+import {ClipLoader} from "react-spinners";
 
 interface ModalProps {
     open: boolean;
@@ -28,6 +29,8 @@ interface SharedWithInterface {
 export const TaskSharedModal: React.FC<ModalProps> = ({open, setOpen, task}) => {
     const handleSuccessResponse = useHandleSuccessResponse();
     const handleErrorResponse = useHandleErrorResponse();
+    const [loading, setLoading] = useState(false);
+    const [sharedLoading, setSharedLoading] = useState(false);
     const [sharedUsers, setSharedUsers] = useState<SharedWithInterface[]>([]);
     const fetchSharedUsers = async () => {
         if (task.is_own) {
@@ -48,7 +51,7 @@ export const TaskSharedModal: React.FC<ModalProps> = ({open, setOpen, task}) => 
             toast("Please select a user to share the task list with.");
             return;
         }
-
+        setSharedLoading(true);
         axios.post(apiRoutes.SHARE_TASK_LIST(task.id), {
             users: selectedItems,
             permission: permission,
@@ -57,7 +60,9 @@ export const TaskSharedModal: React.FC<ModalProps> = ({open, setOpen, task}) => 
             fetchSharedUsers();
         }).catch((error) => {
             handleErrorResponse(error);
-        });
+        }).finally(() => {
+            setSharedLoading(false);
+        })
     };
     const handleUpdatePermission = async (user: SharedWithInterface, permission: string) => {
         axios.put(apiRoutes.UPDATE_PERMISSION(task.id), {
@@ -68,15 +73,16 @@ export const TaskSharedModal: React.FC<ModalProps> = ({open, setOpen, task}) => 
                 "Content-Type": "application/json",
             }
         })
-            .then(() => {
-                toast.success('Permission updated successfully');
+            .then((res) => {
+                handleSuccessResponse(res);
                 fetchSharedUsers();
             })
             .catch((error) => {
-                console.error("Error updating permission:", error);
+                handleErrorResponse(error);
             });
     };
-    const handleUnshare = async (userId: string) => {
+    const handleUnShare = async (userId: string) => {
+        setLoading(true);
         axios.post(apiRoutes.UNSHARE_TASK_LIST(task.id), {
             users: [userId]
         }, {
@@ -84,13 +90,16 @@ export const TaskSharedModal: React.FC<ModalProps> = ({open, setOpen, task}) => 
                 "Content-Type": "application/json",
             }
         })
-            .then(() => {
-                toast.success('Task unshared successfully');
+            .then((res) => {
+                handleSuccessResponse(res);
                 fetchSharedUsers();
             })
             .catch((error) => {
-                console.error("Error Un-Sharing task:", error);
-            });
+                handleErrorResponse(error);
+            }).finally(() => {
+
+            setLoading(false);
+        })
     };
     return (
         <Modal show={open} onClose={() => setOpen(false)}>
@@ -100,14 +109,14 @@ export const TaskSharedModal: React.FC<ModalProps> = ({open, setOpen, task}) => 
                     <MultiSelect
                         apiRoute={apiRoutes.CHECK_USERNAME(":username")}
                         onSubmit={handleMultiSelectSubmit}
+                        sharedLoading={sharedLoading}
                     />
-                    <h3 className="text-lg font-medium mt-4 text-blue-600">Shared with</h3>
-
+                    <h3 className="text-xl  font-medium mt-4 ">Shared with</h3>
                     <ul className="space-y-2">
                         {sharedUsers.map((user) => (
                             <li
                                 key={user.user.username}
-                                className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b pb-4"
+                                className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-4"
                             >
                                 <span className="text-gray-700 text-sm md:text-base font-medium">
       {user.user.username}
@@ -125,9 +134,13 @@ export const TaskSharedModal: React.FC<ModalProps> = ({open, setOpen, task}) => 
                                         color="failure"
                                         size="sm"
                                         className="flex items-center gap-2"
-                                        onClick={() => handleUnshare(user.user.id)}
+                                        onClick={() => handleUnShare(user.user.id)}
                                     >
-                                        <FontAwesomeIcon icon={faTrash}/>
+                                        {loading ? (
+                                            <ClipLoader color="#fff" size={20}/>
+                                        ) : (
+                                            <FontAwesomeIcon icon={faTrash}/>
+                                        )}
                                     </Button>
                                 </div>
                             </li>
@@ -139,8 +152,16 @@ export const TaskSharedModal: React.FC<ModalProps> = ({open, setOpen, task}) => 
                 </div>
             </Modal.Body>
             <Modal.Footer>
-                <Button>Done</Button>
+                <div className="w-full flex justify-end">
+                    <button
+                        className="p-2.5 px-3.5 text-sm font-medium text-white bg-caribbean-green rounded hover:bg-caribbean-green-dark"
+                        onClick={() => setOpen(false)}
+                    >
+                        Done
+                    </button>
+                </div>
             </Modal.Footer>
+
         </Modal>
     );
 }

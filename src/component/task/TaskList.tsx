@@ -68,35 +68,33 @@ export const TaskListCard: React.FC<TaskCardProps> = ({task, onSuccess}) => {
     };
     return (
         <div className="w-full max-w-sm mx-auto mt-4">
-            <div>
-                <Card>
-                    <TaskHeader onSuccess={onSuccess} task={task}/>
-                    <div className="relative">
-                        {isLoading && (
-                            <div className="absolute inset-0 flex justify-center items-center z-10">
-                                <div
-                                    className="p-2 bg-white border border-gray-500 flex justify-center items-center rounded-lg">
-                                    <Loader/>
-                                </div>
+            <Card>
+                <TaskHeader onSuccess={onSuccess} task={task}/>
+                <div className="relative">
+                    {isLoading && (
+                        <div className="absolute inset-0 flex justify-center items-center z-10">
+                            <div
+                                className="p-2 bg-white border border-gray-500 flex justify-center items-center rounded-lg">
+                                <Loader/>
                             </div>
-                        )}
-                        {todoList?.data.map((todo) => (
-                            <Todo
-                                onSuccess={handleAddTodo}
-                                taskListId={task.id}
-                                key={todo.id}
-                                todo={todo}
-                            />
-                        ))}
-                        <AddInput
-                            url={apiRoutes.CREATE_TODO(task.id)}
+                        </div>
+                    )}
+                    {todoList?.data.map((todo) => (
+                        <Todo
                             onSuccess={handleAddTodo}
-                            type="task"
-                            placeholder="Add Todo"
+                            taskListId={task.id}
+                            key={todo.id}
+                            todo={todo}
                         />
-                    </div>
-                </Card>
-            </div>
+                    ))}
+                    <AddInput
+                        url={apiRoutes.CREATE_TODO(task.id)}
+                        onSuccess={handleAddTodo}
+                        type="Todo"
+                        placeholder="Add Todo"
+                    />
+                </div>
+            </Card>
         </div>
     );
 };

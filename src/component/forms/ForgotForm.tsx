@@ -4,9 +4,9 @@ import * as Yup from "yup";
 import {useFormik} from "formik";
 import axios from "axios";
 import {apiRoutes, reactRoutes} from "../../routes";
-import {useHandleErrorResponse} from "../../hook/HandleApiResponse";
+import {useHandleErrorResponse, useHandleSuccessResponse} from "../../hook/HandleApiResponse";
 import {useNavigate} from "react-router-dom";
-import {toast} from "react-toastify";
+
 
 interface ForgotFormProps {
     handleFormSwitch: (type: 'login' | 'register' | 'forgotPassword') => void;
@@ -19,6 +19,7 @@ interface ForgotFormValue {
 export const ForgotForm: React.FC<ForgotFormProps> = ({handleFormSwitch}) => {
     const [loading, setLoading] = useState(false);
     const handleError = useHandleErrorResponse();
+    const handleSuccessResponse = useHandleSuccessResponse();
     const navigate = useNavigate();
     const ForgotPasswordPageSchema = Yup.object().shape({
         email: Yup.string().required("Email is required").email("Invalid email"),
@@ -35,7 +36,7 @@ export const ForgotForm: React.FC<ForgotFormProps> = ({handleFormSwitch}) => {
                     email: values.email,
                 })
                     .then((res: any) => {
-                        toast.success(res.data.status)
+                        handleSuccessResponse(res);
                         navigate(reactRoutes.LOGIN);
                     })
                     .catch((error) => {

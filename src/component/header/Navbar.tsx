@@ -32,7 +32,7 @@ export const Nav: React.FC = () => {
                                 rounded/>
                     }
                 >
-                    <Dropdown.Item>{email}</Dropdown.Item>
+                    <Dropdown.Item disabled>{email}</Dropdown.Item>
                     <Dropdown.Item onClick={() => {
                         navigate(reactRoutes.USER_PROFILE)
                     }}>Profile</Dropdown.Item>
