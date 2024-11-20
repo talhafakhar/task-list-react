@@ -1,26 +1,45 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import {BrowserRouter as Router, Route, Routes} from "react-router-dom";
+import {ToastContainer} from "react-toastify";
+import TaskList from "./pages/taskList/TaskList";
+import {reactRoutes} from "./routes";
+import axios from "axios";
+import "react-toastify/dist/ReactToastify.css";
+import {setupAxios} from "./component/AuthHelper";
+import Login from "./pages/auth/login/Login";
+import ProfileDetail from "./pages/profile/ProfileDetail";
 
+setupAxios(axios)
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const currentLoggedIn = localStorage.getItem("user");
+    return (
+        <Router>
+            <Routes>
+                <Route>
+                    {currentLoggedIn ? (
+                        <>
+                            <Route path={reactRoutes.TASK_LIST} element={<TaskList/>}/>
+                            <Route path={reactRoutes.USER_PROFILE} element={<ProfileDetail/>}/>
+                        </>
+                    ) : (
+                        <>
+                            <Route path='/*' element={<Login/>}/>
+                        </>
+                    )}
+                </Route>
+            </Routes>
+            <ToastContainer
+                position="top-right"
+                autoClose={3000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                pauseOnHover
+            />
+        </Router>
+    );
 }
 
 export default App;
