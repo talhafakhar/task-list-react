@@ -116,12 +116,19 @@ export const TaskSharedModal: React.FC<ModalProps> = ({open, setOpen, task}) => 
                         {sharedUsers.map((user) => (
                             <li
                                 key={user.user.username}
-                                className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-4"
+                                className="flex flex-col md:flex-row justify-between items-center gap-4 pb-4 border-b border-gray-200"
                             >
-                                <span className="text-gray-700 text-sm md:text-base font-medium">
-      {user.user.username}
+                                {/* User Name Label */}
+                                <span className="text-gray-500 text-xs md:text-sm font-medium mb-1">Username:</span>
+                                <span className="text-gray-700 text-sm md:text-base font-medium mb-2">
+        {user.user.username}
     </span>
-                                <div className="flex flex-col md:flex-row gap-2 md:gap-4">
+
+                                {/* Permissions Label */}
+                                <div
+                                    className="flex flex-col md:flex-row gap-2 md:gap-4 mt-2 md:mt-0 justify-center items-center">
+                                    <span
+                                        className="text-gray-500 text-xs md:text-sm font-medium mb-1">permissions:</span>
                                     <select
                                         className="text-sm md:text-base bg-white text-gray-700 border border-gray-300 rounded-md px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         value={user.permission}
@@ -130,6 +137,12 @@ export const TaskSharedModal: React.FC<ModalProps> = ({open, setOpen, task}) => 
                                         <option value="view">View</option>
                                         <option value="edit">Edit</option>
                                     </select>
+                                </div>
+
+                                {/* Action Label */}
+                                <div
+                                    className="flex flex-col md:flex-row gap-2 md:gap-4 mt-2 md:mt-0 justify-center items-center">
+                                    <span className="text-gray-500 text-xs md:text-sm font-medium mb-1">Action:</span>
                                     <Button
                                         color="failure"
                                         size="sm"
@@ -144,6 +157,8 @@ export const TaskSharedModal: React.FC<ModalProps> = ({open, setOpen, task}) => 
                                     </Button>
                                 </div>
                             </li>
+
+
                         ))}
                         {sharedUsers.length === 0 && (
                             <p className="text-red-500">Not shared with anyone</p>

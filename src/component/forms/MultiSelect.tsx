@@ -90,6 +90,10 @@ const MultiSelect: React.FC<MultiSelectProps> = ({apiRoute, onSubmit, sharedLoad
                 placeholder="Add By Usernames"
                 noOptionsMessage={() => "No results"}
                 menuIsOpen={false}
+                components={{
+                    DropdownIndicator: () => null,
+                    IndicatorSeparator: () => null,
+                }}
                 styles={{
                     control: (provided: any) => ({
                         ...provided,
@@ -100,8 +104,11 @@ const MultiSelect: React.FC<MultiSelectProps> = ({apiRoute, onSubmit, sharedLoad
                             boxShadow: "none",
                         },
                         "&:focus": {
-                            borderColor: "transparent",
-                            boxShadow: "none",
+                            "&:focus": {
+                                borderColor: "transparent",
+                                boxShadow: "none",
+                                outline: "none",
+                            },
                         },
                         outline: "none",
                     }),
