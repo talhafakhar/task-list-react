@@ -38,7 +38,6 @@ export const TaskHeader: React.FC<TaskHeaderProps> = ({task, onSuccess}) => {
                 handleErrorResponse(error);
             })
     };
-
     return (
         <div className="flex justify-between items-center">
             <div className="flex items-center space-x-2">

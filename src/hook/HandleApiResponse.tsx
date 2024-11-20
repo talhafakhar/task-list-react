@@ -33,7 +33,7 @@ const useHandleErrorResponse = () => {
             case 401:
                 localStorage.removeItem('user');
                 toast.error(response.data.message || 'Unauthorized');
-                navigate(reactRoutes.LOGIN);
+                window.location.replace(reactRoutes.LOGIN);
                 return (response.status)
             case 403:
                 toast.error(response.data.message || 'Forbidden');
